@@ -1,23 +1,98 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inventaris Lab Elektro</title>
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"
     />
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f9f9f9;
+        color: #333;
+        margin: 0;
+      }
+      .container {
+        background: #ffffff;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+        max-width: 500px;
+        width: 100%;
+        transition: transform 0.3s ease;
+      }
+      .container:hover {
+        transform: scale(1.01);
+      }
+      h1 {
+        font-size: 25px;
+        color: #333;
+        font-weight: 600;
+        text-align: center;
+        margin-bottom: 24px;
+      }
+      label {
+        font-size: 16px;
+        color: #666;
+        display: block;
+        margin-bottom: 8px;
+      }
+      input,
+      button {
+        width: 100%;
+        padding: 12px;
+        margin: 8px 0 16px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        font-size: 15px;
+        color: #333;
+        outline: none;
+        transition: border-color 0.3s ease;
+      }
+      input:focus {
+        border-color: #007aff;
+      }
+      button {
+        background: #007aff;
+        color: white;
+        cursor: pointer;
+        border: none;
+        font-size: 16px;
+        font-weight: 500;
+        margin-top: 12px;
+        transition: background 0.3s ease, transform 0.2s ease;
+      }
+      button:hover {
+        background: #005bb5;
+        transform: translateY(-2px);
+      }
+      #message {
+        margin-top: 20px;
+        font-weight: bold;
+        color: green;
+        padding: 8px;
+        background-color: #e6ffed;
+        border-radius: 4px;
+        border: 1px solid #c3e6cb;
+        display: none;
+        text-align: center;
+      }
+    </style>
   </head>
   <body>
-    <section class="hero is-primary is-bold">
-      <div class="hero-body">
-        <div class="container">
-          <h1 class="title">Form Peminjaman Inventaris Lab Elektro</h1>
-        </div>
-      </div>
-    </section>
-    <form id="form" class="container m-4 pl-4" method="POST">
-      <div class="field">
-        <label class="label">Nama Peminjam</label>
-        <div class="control">
+    <div class="container">
+      <h1>Form Peminjaman Inventaris Lab Elektro</h1>
+      <form id="form" method="POST">
+        <div class="field">
+          <label class="label">Nama Peminjam</label>
           <input
             class="input"
             type="text"
@@ -26,11 +101,9 @@
             required
           />
         </div>
-      </div>
 
-      <div class="field">
-        <label class="label">Jumlah Variasi Barang yang Dipinjam</label>
-        <div class="control">
+        <div class="field">
+          <label class="label">Jumlah Variasi Barang yang Dipinjam</label>
           <input
             class="input"
             type="number"
@@ -40,15 +113,11 @@
             required
           />
         </div>
-      </div>
 
-      <div id="barang-section">
-        <!-- Barang items will be appended here dynamically -->
-      </div>
+        <div id="barang-section"></div>
 
-      <div class="field">
-        <label class="label">Tanggal Peminjaman</label>
-        <div class="control">
+        <div class="field">
+          <label class="label">Tanggal Peminjaman</label>
           <input
             class="input"
             type="date"
@@ -56,11 +125,9 @@
             required
           />
         </div>
-      </div>
 
-      <div class="field">
-        <label class="label">Tanggal Pengembalian</label>
-        <div class="control">
+        <div class="field">
+          <label class="label">Tanggal Pengembalian</label>
           <input
             class="input"
             type="date"
@@ -68,33 +135,17 @@
             required
           />
         </div>
-      </div>
 
-      <div class="field is-grouped">
-        <div class="control">
+        <div class="field is-grouped">
           <button class="button is-primary" type="submit" id="submit-button">
             Submit
           </button>
-        </div>
-        <div class="control">
           <button class="button is-danger" type="reset">Batal</button>
         </div>
-      </div>
-    </form>
+      </form>
 
-    <div
-      id="message"
-      style="
-        display: none;
-        margin: 20px;
-        font-weight: bold;
-        color: green;
-        padding: 8px;
-        background-color: beige;
-        border-radius: 4px;
-        border-color: aquamarine;
-      "
-    ></div>
+      <div id="message">Menyimpan data...</div>
+    </div>
 
     <script>
       document.getElementById("form").addEventListener("submit", function (e) {
@@ -128,8 +179,7 @@
           .then(data => {
             document.getElementById("message").textContent = "Data berhasil disimpan!";
             document.getElementById("message").style.display = "block";
-            document.getElementById("message").style.backgroundColor = "green";
-            document.getElementById("message").style.color = "beige";
+            document.getElementById("message").style.backgroundColor = "#c3e6cb";
             document.getElementById("submit-button").disabled = false;
             document.getElementById("form").reset();
             setTimeout(() => {
@@ -143,7 +193,6 @@
           });
       });
 
-      // Handle dynamic addition of barang fields based on jumlah variasi
       document.querySelector("[name='jumlah_variasi']").addEventListener("input", function () {
         const barangSection = document.getElementById("barang-section");
         barangSection.innerHTML = "";
@@ -151,31 +200,27 @@
 
         for (let i = 1; i <= jumlahVariasi; i++) {
           barangSection.insertAdjacentHTML("beforeend", 
-            <div class="field">
+            `<div class="field">
               <label class="label">Nama Barang ${i}</label>
-              <div class="control">
-                <input
-                  class="input"
-                  type="text"
-                  placeholder="Nama Barang ${i}"
-                  name="nama_barang_${i}"
-                  required
-                />
-              </div>
+              <input
+                class="input"
+                type="text"
+                placeholder="Nama Barang ${i}"
+                name="nama_barang_${i}"
+                required
+              />
             </div>
             <div class="field">
               <label class="label">Jumlah Barang ${i}</label>
-              <div class="control">
-                <input
-                  class="input"
-                  type="number"
-                  placeholder="Jumlah Barang ${i}"
-                  name="jumlah_barang_${i}"
-                  min="1"
-                  required
-                />
-              </div>
-            </div>
+              <input
+                class="input"
+                type="number"
+                placeholder="Jumlah Barang ${i}"
+                name="jumlah_barang_${i}"
+                min="1"
+                required
+              />
+            </div>`
           );
         }
       });
