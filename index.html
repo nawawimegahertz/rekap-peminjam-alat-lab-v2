@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"
+    />
+  </head>
+  <body>
+    <section class="hero is-primary is-bold">
+      <div class="hero-body">
+        <div class="container">
+          <h1 class="title">Form Peminjaman Inventaris Lab Elektro</h1>
+        </div>
+      </div>
+    </section>
+    <form id="form" class="container m-4 pl-4" method="POST">
+      <div class="field">
+        <label class="label">Nama Peminjam</label>
+        <div class="control">
+          <input
+            class="input"
+            type="text"
+            placeholder="Nama Peminjam"
+            name="nama_peminjam"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label">Jumlah Variasi Barang yang Dipinjam</label>
+        <div class="control">
+          <input
+            class="input"
+            type="number"
+            placeholder="Jumlah variasi barang"
+            name="jumlah_variasi"
+            min="1"
+            required
+          />
+        </div>
+      </div>
+
+      <div id="barang-section">
+        <!-- Barang items will be appended here dynamically -->
+      </div>
+
+      <div class="field">
+        <label class="label">Tanggal Peminjaman</label>
+        <div class="control">
+          <input
+            class="input"
+            type="date"
+            name="tanggal_peminjaman"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label">Tanggal Pengembalian</label>
+        <div class="control">
+          <input
+            class="input"
+            type="date"
+            name="tanggal_pengembalian"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="field is-grouped">
+        <div class="control">
+          <button class="button is-primary" type="submit" id="submit-button">
+            Submit
+          </button>
+        </div>
+        <div class="control">
+          <button class="button is-danger" type="reset">Batal</button>
+        </div>
+      </div>
+    </form>
+
+    <div
+      id="message"
+      style="
+        display: none;
+        margin: 20px;
+        font-weight: bold;
+        color: green;
+        padding: 8px;
+        background-color: beige;
+        border-radius: 4px;
+        border-color: aquamarine;
+      "
+    ></div>
+
+    <script>
+      document.getElementById("form").addEventListener("submit", function (e) {
+        e.preventDefault();
+        document.getElementById("message").textContent = "Menyimpan data...";
+        document.getElementById("message").style.display = "block";
+        document.getElementById("submit-button").disabled = true;
+
+        const formData = new FormData(this);
+        const keyValuePairs = [];
+        for (const pair of formData.entries()) {
+          keyValuePairs.push(pair[0] + "=" + pair[1]);
+        }
+
+        const formDataString = keyValuePairs.join("&");
+
+        fetch(
+          "https://script.google.com/macros/s/AKfycbz_aHKLvz6LO3NT9y9HS9FuIlQ8NZadn2fHcn66HBaT7nheUKF3jJ6eaUN9piFKiD4l/exec",
+          {
+            method: "POST",
+            body: formDataString,
+            headers: {
+              "Content-Type": "text/plain;charset=utf-8",
+            },
+          }
+        )
+          .then(response => {
+            if (response) return response;
+            throw new Error("Gagal menyimpan data.");
+          })
+          .then(data => {
+            document.getElementById("message").textContent = "Data berhasil disimpan!";
+            document.getElementById("message").style.display = "block";
+            document.getElementById("message").style.backgroundColor = "green";
+            document.getElementById("message").style.color = "beige";
+            document.getElementById("submit-button").disabled = false;
+            document.getElementById("form").reset();
+            setTimeout(() => {
+              document.getElementById("message").style.display = "none";
+            }, 2600);
+          })
+          .catch(error => {
+            console.error(error);
+            document.getElementById("message").textContent = "Terjadi kesalahan.";
+            document.getElementById("message").style.display = "block";
+          });
+      });
+
+      // Handle dynamic addition of barang fields based on jumlah variasi
+      document.querySelector("[name='jumlah_variasi']").addEventListener("input", function () {
+        const barangSection = document.getElementById("barang-section");
+        barangSection.innerHTML = "";
+        const jumlahVariasi = parseInt(this.value, 10);
+
+        for (let i = 1; i <= jumlahVariasi; i++) {
+          barangSection.insertAdjacentHTML("beforeend", 
+            <div class="field">
+              <label class="label">Nama Barang ${i}</label>
+              <div class="control">
+                <input
+                  class="input"
+                  type="text"
+                  placeholder="Nama Barang ${i}"
+                  name="nama_barang_${i}"
+                  required
+                />
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">Jumlah Barang ${i}</label>
+              <div class="control">
+                <input
+                  class="input"
+                  type="number"
+                  placeholder="Jumlah Barang ${i}"
+                  name="jumlah_barang_${i}"
+                  min="1"
+                  required
+                />
+              </div>
+            </div>
+          );
+        }
+      });
+    </script>
+  </body>
+</html>
